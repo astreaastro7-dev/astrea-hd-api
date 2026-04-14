@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from chart import calculate_chart, CHANNELS, GATE_NAMES
 import pytz
-from timezonefinder import TimezoneFinder
+from tzfpy import get_tz
 from geopy.geocoders import Nominatim
 from datetime import datetime
 import time
@@ -101,8 +101,7 @@ def get_bodygraph(req: ChartRequest):
         )
     
     # 2. Trouver le fuseau horaire
-    tf = TimezoneFinder()
-    tz_name = tf.timezone_at(lat=location.latitude, lng=location.longitude)
+   tz_name = get_tz(location.longitude, location.latitude)
     if not tz_name:
         raise HTTPException(status_code=400, detail="Fuseau horaire introuvable pour cette localisation.")
     
